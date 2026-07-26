@@ -6,9 +6,6 @@
 (function () {
     'use strict';
 
-    // ----------------------------------------
-    // DOM Ready
-    // ----------------------------------------
     document.addEventListener('DOMContentLoaded', init);
 
     function init() {
@@ -17,13 +14,15 @@
         initSmoothScroll();
         initScrollReveal();
         initCounterAnimation();
+        initDivisionTabs();
+        initClientTabs();
+        initScopeWizard();
         initContactForm();
         initCurrentYear();
-        initParallaxShapes();
     }
 
     // ----------------------------------------
-    // Navbar Scroll Effect
+    // Navbar Scroll & Section Active State
     // ----------------------------------------
     function initNavbar() {
         const navbar = document.getElementById('navbar');
@@ -37,16 +36,14 @@
         function onScroll() {
             if (!ticking) {
                 requestAnimationFrame(() => {
-                    // Add scrolled class
                     if (window.scrollY > 50) {
                         navbar.classList.add('scrolled');
                     } else {
                         navbar.classList.remove('scrolled');
                     }
 
-                    // Active link based on scroll position
                     let current = '';
-                    const scrollPos = window.scrollY + 150;
+                    const scrollPos = window.scrollY + 180;
 
                     sections.forEach(section => {
                         const sectionTop = section.offsetTop;
@@ -76,7 +73,7 @@
     }
 
     // ----------------------------------------
-    // Mobile Menu
+    // Mobile Drawer Navigation
     // ----------------------------------------
     function initMobileMenu() {
         const btn = document.getElementById('mobileMenuBtn');
@@ -91,7 +88,6 @@
             document.body.style.overflow = isOpen ? 'hidden' : '';
         });
 
-        // Close on link click
         nav.querySelectorAll('a').forEach(link => {
             link.addEventListener('click', () => {
                 nav.classList.remove('active');
@@ -101,7 +97,6 @@
             });
         });
 
-        // Close on Escape
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape' && nav.classList.contains('active')) {
                 nav.classList.remove('active');
@@ -114,7 +109,7 @@
     }
 
     // ----------------------------------------
-    // Smooth Scroll
+    // Smooth Anchor Scroll
     // ----------------------------------------
     function initSmoothScroll() {
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
@@ -142,12 +137,11 @@
     // Scroll Reveal Animations
     // ----------------------------------------
     function initScrollReveal() {
-        // Check for reduced motion preference
         if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
         const observerOptions = {
             root: null,
-            rootMargin: '0px 0px -60px 0px',
+            rootMargin: '0px 0px -50px 0px',
             threshold: 0.1
         };
 
@@ -160,39 +154,41 @@
             });
         }, observerOptions);
 
-        // Elements to animate
         const selectors = [
             '.section-header',
-            '.about-lead',
-            '.about-text',
-            '.about-features',
-            '.about-visual',
-            '.division-block',
-            '.why-card',
+            '.glass-card',
+            '.glass-card-glow',
+            '.value-card',
+            '.team-card',
             '.client-card',
-            '.clients-category',
-            '.cta-content',
-            '.contact-info',
-            '.contact-form-wrapper'
+            '.wf-step'
         ];
 
         selectors.forEach(selector => {
             document.querySelectorAll(selector).forEach((el, index) => {
-                el.classList.add('reveal');
-                // Stagger delay based on sibling index
-                const delay = Math.min(index * 80, 400);
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(20px)';
+                el.style.transition = 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)';
+                const delay = Math.min(index * 60, 300);
                 el.style.transitionDelay = delay + 'ms';
                 observer.observe(el);
+            });
+        });
+
+        // Dynamic visible class application
+        document.addEventListener('scroll', () => {
+            document.querySelectorAll('.visible').forEach(el => {
+                el.style.opacity = '1';
+                el.style.transform = 'translateY(0)';
             });
         });
     }
 
     // ----------------------------------------
-    // Counter Animation
+    // Numeric Counter Animation
     // ----------------------------------------
     function initCounterAnimation() {
         if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-            // Just show final values
             document.querySelectorAll('.stat-number[data-target]').forEach(counter => {
                 counter.textContent = counter.getAttribute('data-target');
             });
@@ -210,15 +206,14 @@
             function update(now) {
                 const elapsed = now - start;
                 const progress = Math.min(elapsed / duration, 1);
-                // Ease out cubic
                 const eased = 1 - Math.pow(1 - progress, 3);
                 const current = Math.floor(eased * target);
-                counter.textContent = current;
+                counter.textContent = current.toLocaleString();
 
                 if (progress < 1) {
                     requestAnimationFrame(update);
                 } else {
-                    counter.textContent = target;
+                    counter.textContent = target.toLocaleString();
                 }
             }
 
@@ -238,14 +233,180 @@
     }
 
     // ----------------------------------------
-    // Contact Form Validation
+    // Division Tabs Switcher
+    // ----------------------------------------
+    function initDivisionTabs() {
+        const tabBtns = document.querySelectorAll('.div-tab-btn');
+        const panels = document.querySelectorAll('.div-panel');
+
+        if (!tabBtns.length) return;
+
+        tabBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const targetId = btn.getAttribute('aria-controls');
+
+                tabBtns.forEach(b => {
+                    b.classList.remove('active');
+                    b.setAttribute('aria-selected', 'false');
+                });
+                panels.forEach(p => {
+                    p.classList.remove('active');
+                    p.hidden = true;
+                });
+
+                btn.classList.add('active');
+                btn.setAttribute('aria-selected', 'true');
+                const targetPanel = document.getElementById(targetId);
+                if (targetPanel) {
+                    targetPanel.classList.add('active');
+                    targetPanel.hidden = false;
+                }
+            });
+        });
+    }
+
+    // ----------------------------------------
+    // Client Tabs Switcher
+    // ----------------------------------------
+    function initClientTabs() {
+        const tabBtns = document.querySelectorAll('.client-tab-btn');
+        const panels = document.querySelectorAll('.client-panel');
+
+        if (!tabBtns.length) return;
+
+        tabBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const targetId = btn.getAttribute('aria-controls');
+
+                tabBtns.forEach(b => {
+                    b.classList.remove('active');
+                    b.setAttribute('aria-selected', 'false');
+                });
+                panels.forEach(p => {
+                    p.classList.remove('active');
+                    p.hidden = true;
+                });
+
+                btn.classList.add('active');
+                btn.setAttribute('aria-selected', 'true');
+                const targetPanel = document.getElementById(targetId);
+                if (targetPanel) {
+                    targetPanel.classList.add('active');
+                    targetPanel.hidden = false;
+                }
+            });
+        });
+    }
+
+    // ----------------------------------------
+    // Scope Estimator Multi-Step Wizard
+    // ----------------------------------------
+    function initScopeWizard() {
+        const step1 = document.getElementById('wizard-step-1');
+        const step2 = document.getElementById('wizard-step-2');
+        const step3 = document.getElementById('wizard-step-3');
+
+        const btnNext1 = document.getElementById('wizNext1');
+        const btnNext2 = document.getElementById('wizNext2');
+        const btnPrev2 = document.getElementById('wizPrev2');
+        const btnPrev3 = document.getElementById('wizPrev3');
+
+        const form = document.getElementById('wizardForm');
+        const submitBtn = document.getElementById('wizSubmitBtn');
+
+        if (!step1 || !step2 || !step3) return;
+
+        function updateStepIndicators(stepNum) {
+            document.querySelectorAll('.step-item').forEach(item => {
+                const itemStep = parseInt(item.getAttribute('data-step'), 10);
+                if (itemStep <= stepNum) {
+                    item.classList.add('active');
+                } else {
+                    item.classList.remove('active');
+                }
+            });
+        }
+
+        btnNext1.addEventListener('click', () => {
+            const selectedServices = document.querySelectorAll('input[name="wiz_service"]:checked');
+            if (!selectedServices.length) {
+                showToast('Please select at least one division service to continue.', 'warning');
+                return;
+            }
+            step1.hidden = true;
+            step1.classList.remove('active');
+            step2.hidden = false;
+            step2.classList.add('active');
+            updateStepIndicators(2);
+        });
+
+        btnNext2.addEventListener('click', () => {
+            step2.hidden = true;
+            step2.classList.remove('active');
+            step3.hidden = false;
+            step3.classList.add('active');
+            updateStepIndicators(3);
+        });
+
+        btnPrev2.addEventListener('click', () => {
+            step2.hidden = true;
+            step2.classList.remove('active');
+            step1.hidden = false;
+            step1.classList.add('active');
+            updateStepIndicators(1);
+        });
+
+        btnPrev3.addEventListener('click', () => {
+            step3.hidden = true;
+            step3.classList.remove('active');
+            step2.hidden = false;
+            step2.classList.add('active');
+            updateStepIndicators(2);
+        });
+
+        if (form) {
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+
+                const name = document.getElementById('wiz_name').value.trim();
+                const org = document.getElementById('wiz_org').value.trim();
+                const email = document.getElementById('wiz_email').value.trim();
+                const phone = document.getElementById('wiz_phone').value.trim();
+
+                if (!name || !org || !email || !phone) {
+                    showToast('Please fill in all required contact fields.', 'warning');
+                    return;
+                }
+
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Submitting Scope Brief...';
+
+                await new Promise(resolve => setTimeout(resolve, 1500));
+
+                showToast('Scope Brief submitted! Our engineering team will prepare an official proposal.', 'success');
+
+                // Reset wizard
+                form.reset();
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Submit Scope Brief';
+
+                step3.hidden = true;
+                step3.classList.remove('active');
+                step1.hidden = false;
+                step1.classList.add('active');
+                updateStepIndicators(1);
+            });
+        }
+    }
+
+    // ----------------------------------------
+    // Contact Form Real-Time Validation
     // ----------------------------------------
     function initContactForm() {
         const form = document.getElementById('contactForm');
         const submitBtn = document.getElementById('submitBtn');
         if (!form || !submitBtn) return;
 
-        // Real-time validation
         const fields = form.querySelectorAll('input, select, textarea');
         fields.forEach(field => {
             field.addEventListener('blur', () => validateField(field));
@@ -259,7 +420,6 @@
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
 
-            // Validate all fields
             let isValid = true;
             const requiredFields = form.querySelectorAll('[required]');
             requiredFields.forEach(field => {
@@ -269,31 +429,22 @@
             });
 
             if (!isValid) {
-                // Focus first error field
                 const firstError = form.querySelector('.error');
                 if (firstError) firstError.focus();
                 return;
             }
 
-            // Collect form data
-            const formData = new FormData(form);
-            const data = Object.fromEntries(formData);
-
-            // Submit
             submitBtn.classList.add('loading');
             submitBtn.disabled = true;
 
-            // Simulate API call (replace with actual endpoint)
             await new Promise(resolve => setTimeout(resolve, 1500));
 
             submitBtn.classList.remove('loading');
             submitBtn.disabled = false;
 
-            // Show success toast
-            showToast('Thank you! Your message has been sent. We\'ll get back to you shortly.', 'success');
+            showToast('Thank you! Your project inquiry has been received. Our team will get back to you shortly.', 'success');
             form.reset();
 
-            // Clear any error states
             form.querySelectorAll('.error').forEach(el => el.classList.remove('error'));
             form.querySelectorAll('.form-error').forEach(el => {
                 el.textContent = '';
@@ -307,20 +458,17 @@
         let isValid = true;
         let message = '';
 
-        // Reset state
         field.classList.remove('error');
         if (errorEl) {
             errorEl.textContent = '';
             errorEl.classList.remove('visible');
         }
 
-        // Required check
         if (field.hasAttribute('required') && !field.value.trim()) {
             isValid = false;
             message = 'This field is required';
         }
 
-        // Email validation
         if (isValid && field.type === 'email' && field.value) {
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             if (!emailRegex.test(field.value)) {
@@ -329,7 +477,6 @@
             }
         }
 
-        // Phone validation (optional field, but validate format if provided)
         if (isValid && field.type === 'tel' && field.value) {
             const phoneRegex = /^[\+]?[(]?[0-9]{1,4}[)]?[-\s\.]?[0-9]{1,4}[-\s\.]?[0-9]{1,9}$/;
             if (!phoneRegex.test(field.value.replace(/\s/g, ''))) {
@@ -350,7 +497,7 @@
     }
 
     // ----------------------------------------
-    // Toast Notifications
+    // Toast Notification System
     // ----------------------------------------
     function showToast(message, type) {
         const toast = document.getElementById('toast');
@@ -358,8 +505,6 @@
 
         toast.textContent = message;
         toast.className = 'toast ' + type;
-
-        // Trigger reflow
         void toast.offsetWidth;
         toast.classList.add('visible');
 
@@ -369,50 +514,12 @@
     }
 
     // ----------------------------------------
-    // Current Year
+    // Footer Current Year
     // ----------------------------------------
     function initCurrentYear() {
         const yearEl = document.getElementById('currentYear');
         if (yearEl) {
             yearEl.textContent = new Date().getFullYear();
         }
-    }
-
-    // ----------------------------------------
-    // Parallax Shapes (Mouse Move)
-    // ----------------------------------------
-    function initParallaxShapes() {
-        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-        if (window.matchMedia('(pointer: coarse)').matches) return; // Skip on touch
-
-        const shapes = document.querySelectorAll('.shape');
-        if (!shapes.length) return;
-
-        let mouseX = 0;
-        let mouseY = 0;
-        let currentX = 0;
-        let currentY = 0;
-
-        document.addEventListener('mousemove', (e) => {
-            mouseX = (e.clientX / window.innerWidth - 0.5) * 2;
-            mouseY = (e.clientY / window.innerHeight - 0.5) * 2;
-        }, { passive: true });
-
-        function animate() {
-            // Lerp for smooth following
-            currentX += (mouseX - currentX) * 0.03;
-            currentY += (mouseY - currentY) * 0.03;
-
-            shapes.forEach((shape, index) => {
-                const speed = (index + 1) * 8;
-                const x = currentX * speed;
-                const y = currentY * speed;
-                shape.style.transform = 'translate(' + x + 'px, ' + y + 'px)';
-            });
-
-            requestAnimationFrame(animate);
-        }
-
-        animate();
     }
 })();
