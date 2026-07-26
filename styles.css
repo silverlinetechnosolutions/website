@@ -315,29 +315,35 @@ button {
     display: flex;
     align-items: center;
     gap: 12px;
+    transition: transform var(--transition-fast);
+}
+
+.nav-logo:hover {
+    transform: scale(1.02);
 }
 
 .logo-img {
-    height: 40px;
+    height: 48px;
     width: auto;
-    max-width: 200px;
+    max-width: 240px;
     object-fit: contain;
 }
 
 .logo-icon {
-    width: 36px;
-    height: 36px;
+    width: 44px;
+    height: 44px;
     object-fit: contain;
     border-radius: var(--radius-sm);
     flex-shrink: 0;
 }
 
 .logo-full {
-    height: 48px;
+    height: 56px;
     width: auto;
-    max-width: 220px;
+    max-width: 280px;
     object-fit: contain;
     display: block;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.08));
 }
 
 .logo-text {
@@ -1327,8 +1333,9 @@ input.error, select.error, textarea.error {
 }
 
 .footer-logo .logo-full {
-    height: 44px;
-    max-width: 200px;
+    height: 52px;
+    max-width: 240px;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.06));
 }
 
 .footer-tagline {
