@@ -934,59 +934,7 @@ input, select, textarea {
 
 .about-visual {
     display: grid;
-    grid-template-columns: 1fr 1fr;
     gap: var(--space-5);
-}
-
-.visual-card {
-    padding: var(--space-7);
-    background: var(--neutral-0);
-    border: 1px solid var(--neutral-200);
-    border-radius: var(--radius-xl);
-    transition: all var(--duration-slow) var(--ease-spring);
-}
-
-.visual-card:hover {
-    transform: translateY(-8px);
-    box-shadow: var(--shadow-xl);
-    border-color: var(--brand-200);
-}
-
-.card-1 { grid-column: 1 / -1; }
-
-.card-icon {
-    width: 60px;
-    height: 60px;
-    padding: var(--space-4);
-    background: var(--brand-50);
-    color: var(--brand-600);
-    border-radius: var(--radius-lg);
-    margin-bottom: var(--space-5);
-    transition: all var(--duration-base) var(--ease-out);
-}
-
-.visual-card:hover .card-icon {
-    background: var(--brand-500);
-    color: var(--neutral-0);
-    transform: scale(1.05);
-}
-
-.card-icon svg {
-    width: 100%;
-    height: 100%;
-}
-
-.visual-card h4 {
-    font-family: var(--font-display);
-    font-size: var(--text-lg);
-    font-weight: 600;
-    color: var(--neutral-900);
-    margin-bottom: var(--space-2);
-}
-
-.visual-card p {
-    font-size: var(--text-sm);
-    color: var(--neutral-500);
 }
 
 /* ----------------------------------------
@@ -1949,8 +1897,18 @@ input, select, textarea {
         order: -1;
     }
 
-    .division-grid {
+    .division-grid-visual,
+    .division-grid-visual.reverse {
         grid-template-columns: 1fr;
+    }
+
+    .division-grid-visual.reverse .division-visual-col,
+    .division-grid-visual.reverse .division-content-col {
+        order: unset;
+    }
+
+    .division-img-main {
+        height: 280px;
     }
 
     .service-list {
@@ -2019,12 +1977,24 @@ input, select, textarea {
         grid-template-columns: 1fr;
     }
 
-    .about-visual {
+    .about-img-row {
         grid-template-columns: 1fr 1fr;
     }
 
-    .card-1 {
-        grid-column: auto;
+    .small-img {
+        height: 140px;
+    }
+
+    .division-img-main {
+        height: 220px;
+    }
+
+    .division-img-row {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .division-img-sm {
+        height: 130px;
     }
 
     .division-header {
@@ -2091,6 +2061,26 @@ input, select, textarea {
         grid-template-columns: 1fr;
     }
 
+    .about-img-row {
+        grid-template-columns: 1fr;
+    }
+
+    .small-img {
+        height: 180px;
+    }
+
+    .division-img-main {
+        height: 200px;
+    }
+
+    .division-img-row {
+        grid-template-columns: 1fr;
+    }
+
+    .division-img-sm {
+        height: 160px;
+    }
+
     .division-number {
         font-size: 32px;
     }
@@ -2100,9 +2090,210 @@ input, select, textarea {
     }
 }
 
-/* ----------------------------------------
+/* ========================================
+   Image Styles
+   ======================================== */
+
+/* Hero Background Image */
+.hero-bg-img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+}
+
+.hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        180deg,
+        rgba(2, 6, 23, 0.85) 0%,
+        rgba(15, 23, 42, 0.9) 40%,
+        rgba(2, 6, 23, 0.95) 100%
+    );
+}
+
+.hero-bg .hero-grid,
+.hero-bg .hero-glow {
+    z-index: 1;
+}
+
+/* About Section Images */
+.about-visual {
+    display: grid;
+    gap: var(--space-5);
+}
+
+.about-img-wrapper {
+    position: relative;
+    overflow: hidden;
+    border-radius: var(--radius-xl);
+}
+
+.about-img-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform var(--duration-slow) var(--ease-out);
+}
+
+.about-img-wrapper:hover img {
+    transform: scale(1.05);
+}
+
+.main-img {
+    height: 360px;
+    box-shadow: var(--shadow-lg);
+}
+
+.about-img-badge {
+    position: absolute;
+    bottom: var(--space-5);
+    left: var(--space-5);
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-3) var(--space-5);
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+}
+
+.badge-number {
+    font-family: var(--font-display);
+    font-size: var(--text-2xl);
+    font-weight: 700;
+    color: var(--brand-600);
+    line-height: 1;
+}
+
+.badge-text {
+    font-size: var(--text-sm);
+    font-weight: 600;
+    color: var(--neutral-700);
+    line-height: 1.2;
+}
+
+.about-img-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-5);
+}
+
+.small-img {
+    height: 180px;
+    box-shadow: var(--shadow-md);
+}
+
+/* Division Block Images */
+.division-grid-visual {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-10);
+    align-items: start;
+}
+
+.division-grid-visual.reverse .division-visual-col {
+    order: 2;
+}
+
+.division-grid-visual.reverse .division-content-col {
+    order: 1;
+}
+
+.division-visual-col {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+}
+
+.division-img-main {
+    position: relative;
+    height: 320px;
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    box-shadow: var(--shadow-xl);
+}
+
+.division-img-main img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform var(--duration-slow) var(--ease-out);
+}
+
+.division-img-main:hover img {
+    transform: scale(1.05);
+}
+
+.division-img-main::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, transparent 60%, rgba(0,0,0,0.15) 100%);
+    pointer-events: none;
+}
+
+.division-img-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-5);
+}
+
+.division-img-sm {
+    height: 160px;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-md);
+}
+
+.division-img-sm img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform var(--duration-slow) var(--ease-out);
+}
+
+.division-img-sm:hover img {
+    transform: scale(1.08);
+}
+
+.division-content-col {
+    padding-top: var(--space-4);
+}
+
+/* CTA Background Image */
+.cta-bg-img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+}
+
+.cta-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        135deg,
+        rgba(15, 23, 42, 0.92) 0%,
+        rgba(30, 41, 59, 0.88) 100%
+    );
+}
+
+.cta-content,
+.cta-bg .cta-grid,
+.cta-bg .cta-glow {
+    z-index: 1;
+}
+
+/* ========================================
    Print Styles
-   ---------------------------------------- */
+   ======================================== */
 @media print {
     .navbar,
     .hero-bg,
