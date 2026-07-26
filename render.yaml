@@ -1,0 +1,13 @@
+services:
+  - type: static_site
+    name: silverline-website
+    runtime: static
+    buildCommand: echo "Static site - no build needed"
+    staticPublishPath: .
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    envVars:
+      - key: NODE_VERSION
+        value: 20
