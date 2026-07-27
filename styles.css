@@ -75,7 +75,7 @@
     --radius-xl: 16px;
     --radius-full: 9999px;
 
-    --nav-height: 72px;
+    --nav-height: 88px;
     --container-max: 1200px;
     --transition-fast: 0.15s ease;
     --transition-base: 0.25s ease;
@@ -317,12 +317,13 @@ button {
 .nav-logo {
     display: flex;
     align-items: center;
-    transition: transform var(--transition-fast);
+    padding: 8px 0;
     line-height: 0;
+    flex-shrink: 0;
 }
 
 .nav-logo:hover {
-    transform: scale(1.02);
+    opacity: 0.92;
 }
 
 .logo-img {
@@ -341,11 +342,10 @@ button {
 }
 
 .logo-full {
-    height: 80px;
+    height: 64px;
     width: auto;
     object-fit: contain;
     display: block;
-    mix-blend-mode: multiply;
 }
 
 .logo-text {
@@ -372,7 +372,7 @@ button {
 .nav-links ul {
     display: flex;
     align-items: center;
-    gap: 24px;
+    gap: 20px;
     list-style: none;
 }
 
@@ -381,7 +381,7 @@ button {
     font-weight: 500;
     color: #475569;
     position: relative;
-    padding: 8px 0;
+    padding: 6px 0;
 }
 
 .nav-links a:hover,
@@ -1349,7 +1349,7 @@ input.error, select.error, textarea.error {
 }
 
 .footer-logo .logo-full {
-    height: 68px;
+    height: 56px;
     width: auto;
     object-fit: contain;
 }
@@ -1479,7 +1479,7 @@ input.error, select.error, textarea.error {
         line-height: 0;
     }
     .logo-full {
-        height: 50px;
+        height: 46px;
     }
     .mobile-menu-btn { display: flex; }
     .vision-mission-grid, .values-grid, .services-list-grid, .wizard-options-grid, .form-row {
@@ -1495,6 +1495,6 @@ input.error, select.error, textarea.error {
         grid-template-columns: 1fr;
     }
     .footer-logo .logo-full {
-        height: 50px;
+        height: 44px;
     }
 }
