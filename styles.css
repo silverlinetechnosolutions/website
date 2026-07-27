@@ -318,17 +318,12 @@ button {
 .nav-logo {
     display: flex;
     align-items: center;
-    gap: 8px;
     transition: transform var(--transition-fast);
-    padding: 6px 12px;
-    background: rgba(241, 245, 249, 0.8);
-    border-radius: var(--radius-md);
-    border: 1px solid #e2e8f0;
+    line-height: 0;
 }
 
 .nav-logo:hover {
     transform: scale(1.02);
-    background: rgba(241, 245, 249, 1);
 }
 
 .logo-img {
@@ -347,13 +342,10 @@ button {
 }
 
 .logo-full {
-    height: 64px;
+    height: 60px;
     width: auto;
-    max-width: 360px;
     object-fit: contain;
     display: block;
-    image-rendering: -webkit-optimize-contrast;
-    image-rendering: crisp-edges;
 }
 
 .logo-text {
@@ -1356,10 +1348,9 @@ input.error, select.error, textarea.error {
 }
 
 .footer-logo .logo-full {
-    height: 60px;
-    max-width: 320px;
-    image-rendering: -webkit-optimize-contrast;
-    image-rendering: crisp-edges;
+    height: 56px;
+    width: auto;
+    object-fit: contain;
 }
 
 .footer-tagline {
@@ -1484,11 +1475,10 @@ input.error, select.error, textarea.error {
     }
     .nav-cta { display: none; }
     .nav-logo {
-        padding: 4px 8px;
+        line-height: 0;
     }
     .logo-full {
-        height: 48px;
-        max-width: 200px;
+        height: 44px;
     }
     .mobile-menu-btn { display: flex; }
     .vision-mission-grid, .values-grid, .services-list-grid, .wizard-options-grid, .form-row {
@@ -1504,7 +1494,6 @@ input.error, select.error, textarea.error {
         grid-template-columns: 1fr;
     }
     .footer-logo .logo-full {
-        height: 48px;
-        max-width: 200px;
+        height: 44px;
     }
 }
