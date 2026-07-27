@@ -342,10 +342,13 @@ button {
 }
 
 .logo-full {
-    height: 60px;
+    height: 100px;
     width: auto;
     object-fit: contain;
     display: block;
+    background: linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)), url('../logo.png') no-repeat;
+    background-size: contain;
+    background-position: center;
 }
 
 .logo-text {
@@ -1348,7 +1351,7 @@ input.error, select.error, textarea.error {
 }
 
 .footer-logo .logo-full {
-    height: 56px;
+    height: 68px;
     width: auto;
     object-fit: contain;
 }
@@ -1478,7 +1481,7 @@ input.error, select.error, textarea.error {
         line-height: 0;
     }
     .logo-full {
-        height: 44px;
+        height: 50px;
     }
     .mobile-menu-btn { display: flex; }
     .vision-mission-grid, .values-grid, .services-list-grid, .wizard-options-grid, .form-row {
@@ -1494,6 +1497,6 @@ input.error, select.error, textarea.error {
         grid-template-columns: 1fr;
     }
     .footer-logo .logo-full {
-        height: 44px;
+        height: 50px;
     }
 }
