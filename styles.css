@@ -296,7 +296,6 @@ button {
     z-index: 1000;
     background: rgba(255, 255, 255, 0.98);
     backdrop-filter: blur(12px);
-    border-bottom: 1px solid #e2e8f0;
     transition: all var(--transition-base);
 }
 
@@ -1324,8 +1323,8 @@ input.error, select.error, textarea.error {
    12. Footer & Toast
    -------------------------------------------------------------------------- */
 .footer {
-    background: rgba(2, 6, 23, 0.95);
-    border-top: 1px solid var(--border-light);
+    background: var(--bg-secondary);
+    border-top: 1px solid #e2e8f0;
     padding: 64px 0 30px 0;
 }
 
@@ -1338,6 +1337,7 @@ input.error, select.error, textarea.error {
 
 .footer-brand .logo-main {
     font-size: 1.25rem;
+    color: #0f172a;
 }
 
 .footer-logo {
@@ -1357,13 +1357,13 @@ input.error, select.error, textarea.error {
 .footer-tagline {
     margin-top: 16px;
     font-size: var(--text-sm);
-    color: var(--text-muted);
+    color: #64748b;
     line-height: 1.6;
 }
 
 .footer-links h4, .footer-contact h4 {
     font-size: var(--text-base);
-    color: var(--text-primary);
+    color: #0f172a;
     margin-bottom: 20px;
     font-weight: 600;
 }
@@ -1377,24 +1377,24 @@ input.error, select.error, textarea.error {
 
 .footer-links a {
     font-size: var(--text-sm);
-    color: var(--text-secondary);
+    color: #475569;
 }
 
 .footer-links a:hover {
-    color: var(--accent-cyan);
+    color: var(--brand-500);
 }
 
 .footer-contact li {
     font-size: var(--text-sm);
-    color: var(--text-secondary);
+    color: #475569;
 }
 
 .footer-bottom {
-    border-top: 1px solid var(--border-light);
+    border-top: 1px solid #e2e8f0;
     padding-top: 24px;
     text-align: center;
     font-size: var(--text-xs);
-    color: var(--text-muted);
+    color: #64748b;
 }
 
 .toast {
