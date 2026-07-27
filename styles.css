@@ -75,7 +75,7 @@
     --radius-xl: 16px;
     --radius-full: 9999px;
 
-    --nav-height: 88px;
+    --nav-height: 100px;
     --container-max: 1200px;
     --transition-fast: 0.15s ease;
     --transition-base: 0.25s ease;
@@ -317,7 +317,7 @@ button {
 .nav-logo {
     display: flex;
     align-items: center;
-    padding: 8px 0;
+    padding: 10px 0;
     line-height: 0;
     flex-shrink: 0;
 }
@@ -342,7 +342,7 @@ button {
 }
 
 .logo-full {
-    height: 64px;
+    height: 80px;
     width: auto;
     object-fit: contain;
     display: block;
@@ -403,25 +403,6 @@ button {
 .nav-links a:hover::after,
 .nav-links a.active::after {
     width: 100%;
-}
-
-.nav-actions {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-}
-
-.nav-cta {
-    background: var(--brand-500) !important;
-    color: #ffffff !important;
-    padding: 10px 20px !important;
-    border-radius: var(--radius-md) !important;
-    font-weight: 600 !important;
-}
-
-.nav-cta:hover {
-    background: var(--brand-600) !important;
-    transform: translateY(-1px);
 }
 
 .mobile-menu-btn {
@@ -1323,7 +1304,7 @@ input.error, select.error, textarea.error {
    12. Footer & Toast
    -------------------------------------------------------------------------- */
 .footer {
-    background: var(--bg-secondary);
+    background: #ffffff;
     border-top: 1px solid #e2e8f0;
     padding: 64px 0 30px 0;
 }
@@ -1357,7 +1338,7 @@ input.error, select.error, textarea.error {
 .footer-tagline {
     margin-top: 16px;
     font-size: var(--text-sm);
-    color: #64748b;
+    color: #475569;
     line-height: 1.6;
 }
 
@@ -1377,7 +1358,7 @@ input.error, select.error, textarea.error {
 
 .footer-links a {
     font-size: var(--text-sm);
-    color: #475569;
+    color: #334155;
 }
 
 .footer-links a:hover {
@@ -1386,7 +1367,7 @@ input.error, select.error, textarea.error {
 
 .footer-contact li {
     font-size: var(--text-sm);
-    color: #475569;
+    color: #334155;
 }
 
 .footer-bottom {
@@ -1474,12 +1455,11 @@ input.error, select.error, textarea.error {
     .nav-links a.active {
         color: var(--brand-500);
     }
-    .nav-cta { display: none; }
     .nav-logo {
         line-height: 0;
     }
     .logo-full {
-        height: 46px;
+        height: 56px;
     }
     .mobile-menu-btn { display: flex; }
     .vision-mission-grid, .values-grid, .services-list-grid, .wizard-options-grid, .form-row {
@@ -1495,6 +1475,6 @@ input.error, select.error, textarea.error {
         grid-template-columns: 1fr;
     }
     .footer-logo .logo-full {
-        height: 44px;
+        height: 52px;
     }
 }
