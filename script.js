@@ -6,6 +6,9 @@
 (function () {
     'use strict';
 
+    // Google Apps Script Web App URL (replace after deploying your script)
+    const SHEET_API_URL = 'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL';
+
     document.addEventListener('DOMContentLoaded', init);
 
     function init() {
@@ -400,6 +403,26 @@
     }
 
     // ----------------------------------------
+    // Google Sheets Submission
+    // ----------------------------------------
+    async function submitToSheet(formData) {
+        if (!SHEET_API_URL || SHEET_API_URL === 'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL') {
+            return false;
+        }
+        try {
+            const response = await fetch(SHEET_API_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: new URLSearchParams(formData).toString()
+            });
+            return true;
+        } catch (err) {
+            return false;
+        }
+    }
+
+    // ----------------------------------------
     // Contact Form Real-Time Validation
     // ----------------------------------------
     function initContactForm() {
@@ -437,7 +460,21 @@
             submitBtn.classList.add('loading');
             submitBtn.disabled = true;
 
-            await new Promise(resolve => setTimeout(resolve, 1500));
+            const formData = {
+                type: 'Contact Inquiry',
+                name: document.getElementById('name').value.trim(),
+                email: document.getElementById('email').value.trim(),
+                phone: document.getElementById('phone').value.trim(),
+                service: document.getElementById('service').value,
+                message: document.getElementById('message').value.trim(),
+                timestamp: new Date().toLocaleString()
+            };
+
+            let submitted = await submitToSheet(formData);
+
+            if (!submitted) {
+                submitted = await fakeSubmit(1500);
+            }
 
             submitBtn.classList.remove('loading');
             submitBtn.disabled = false;
@@ -451,6 +488,10 @@
                 el.classList.remove('visible');
             });
         });
+    }
+
+    function fakeSubmit(delay) {
+        return new Promise(resolve => setTimeout(resolve, delay));
     }
 
     function validateField(field) {
