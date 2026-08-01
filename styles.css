@@ -284,6 +284,28 @@ button {
     width: 100%;
 }
 
+.btn-loading {
+    display: none;
+}
+
+.btn-primary .btn-loading svg {
+    vertical-align: middle;
+}
+
+.btn-primary.loading .btn-text {
+    display: none;
+}
+
+.btn-primary.loading .btn-loading {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-primary.loading {
+    pointer-events: none;
+    opacity: 0.85;
+}
 /* --------------------------------------------------------------------------
    03. Header & Navigation Bar - WHITE THEME
    -------------------------------------------------------------------------- */
