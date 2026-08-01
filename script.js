@@ -7,7 +7,7 @@
     'use strict';
 
     // Google Apps Script Web App URL (replace after deploying your script)
-    const SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbzT6Q9kEsRYovrITTKtAT1919nGLaJP1Jp9IHnfcxsZD5JGe2BvO9PVlhRIYIcz9zDuTA/exec';
+    const SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbzNOoyVbizTtVofz9VE3j88m70WBeh2B5Y229zRhwLzjMNVe_GviKe0MdWEQKaWF9petg/exec';
 
     document.addEventListener('DOMContentLoaded', init);
 
