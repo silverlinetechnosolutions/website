@@ -75,7 +75,7 @@
     --radius-xl: 16px;
     --radius-full: 9999px;
 
-    --nav-height: 100px;
+    --nav-height: 84px;
     --container-max: 1200px;
     --transition-fast: 0.15s ease;
     --transition-base: 0.25s ease;
@@ -312,12 +312,13 @@ button {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: 32px;
 }
 
 .nav-logo {
     display: flex;
     align-items: center;
-    padding: 10px 0;
+    padding: 6px 0;
     line-height: 0;
     flex-shrink: 0;
 }
@@ -369,11 +370,19 @@ button {
     font-weight: 500;
 }
 
+.nav-links {
+    display: flex;
+    align-items: center;
+    margin-left: auto;
+}
+
 .nav-links ul {
     display: flex;
     align-items: center;
-    gap: 20px;
+    gap: 28px;
     list-style: none;
+    margin: 0;
+    padding: 0;
 }
 
 .nav-links a {
@@ -1459,7 +1468,7 @@ input.error, select.error, textarea.error {
         line-height: 0;
     }
     .logo-full {
-        height: 56px;
+        height: 40px;
     }
     .mobile-menu-btn { display: flex; }
     .vision-mission-grid, .values-grid, .services-list-grid, .wizard-options-grid, .form-row {
@@ -1475,6 +1484,6 @@ input.error, select.error, textarea.error {
         grid-template-columns: 1fr;
     }
     .footer-logo .logo-full {
-        height: 52px;
+        height: 46px;
     }
 }
