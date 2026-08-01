@@ -33,14 +33,15 @@ function doPost(e) {
   ];
   sheet.appendRow(row);
 
-  sendInquiryEmail(d);
+  var emailStatus = sendInquiryEmail(d);
 
-  return ContentService.createTextOutput(JSON.stringify({ result: 'success' }))
+  return ContentService.createTextOutput(JSON.stringify({ result: 'success', email: emailStatus }))
     .setMimeType(ContentService.MimeType.JSON);
 }
 
 /**
  * Sends a formatted email of the inquiry to the admin inbox.
+ * Returns 'sent' or the error message so it can be surfaced.
  */
 function sendInquiryEmail(d) {
   var subject = 'New Website Inquiry - ' + (d.type || 'Contact Inquiry');
@@ -60,9 +61,28 @@ function sendInquiryEmail(d) {
 
   try {
     MailApp.sendEmail(ADMIN_EMAIL, subject, body);
+    Logger.log('Email sent to ' + ADMIN_EMAIL);
+    return 'sent';
   } catch (err) {
     Logger.log('Email send failed: ' + err);
+    return 'FAILED: ' + err;
   }
+}
+
+/**
+ * Run this from the editor to verify email sending works (View > Logs).
+ */
+function testEmail() {
+  var status = sendInquiryEmail({
+    type: 'TEST',
+    name: 'Test User',
+    email: 'test@example.com',
+    phone: '+91 98765 43210',
+    service: 'Test Service',
+    message: 'This is a test email from the Apps Script.',
+    timestamp: new Date().toLocaleString()
+  });
+  Logger.log('testEmail result: ' + status);
 }
 
 /**
