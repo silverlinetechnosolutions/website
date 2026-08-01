@@ -440,6 +440,19 @@
             });
         });
 
+        const phoneField = document.getElementById('phone');
+        if (phoneField) {
+            phoneField.addEventListener('input', () => {
+                let val = phoneField.value;
+                if (val.startsWith('+91')) {
+                    val = '+91' + val.slice(3).replace(/[^0-9]/g, '').slice(0, 10);
+                } else {
+                    val = '+91' + val.replace(/[^0-9]/g, '').slice(0, 10);
+                }
+                phoneField.value = val;
+            });
+        }
+
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
 
@@ -519,10 +532,10 @@
         }
 
         if (isValid && field.type === 'tel' && field.value) {
-            const phoneRegex = /^[\+]?[(]?[0-9]{1,4}[)]?[-\s\.]?[0-9]{1,4}[-\s\.]?[0-9]{1,9}$/;
+            const phoneRegex = /^\+91[0-9]{10}$/;
             if (!phoneRegex.test(field.value.replace(/\s/g, ''))) {
                 isValid = false;
-                message = 'Please enter a valid phone number';
+                message = 'Enter +91 followed by a 10-digit mobile number';
             }
         }
 
