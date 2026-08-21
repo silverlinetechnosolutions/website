@@ -1,0 +1,630 @@
+From e0e63cd4263410f31db2d19c9a1e7158ce68203b Mon Sep 17 00:00:00 2001
+From: Claude <noreply@anthropic.com>
+Date: Fri, 21 Aug 2026 12:52:57 +0000
+Subject: [PATCH] Add DPDP-compliant Privacy Policy and consent checkboxes
+
+- Added privacy-policy.html covering: Data Fiduciary identity, what
+  personal data is collected via the contact form and Scope
+  Estimator wizard, purpose/legal basis (consent), third-party
+  sharing disclosure (Google Apps Script/Sheets used to store
+  enquiries), retention, cookies, security, Data Principal rights,
+  a Grievance Officer contact block, and the right to complain to
+  the Data Protection Board of India -- per the DPDP Act 2023, DPDP
+  Rules 2025, and IT Act 2000 / SPDI Rules 2011.
+- Added a required consent checkbox, linked to the new Privacy
+  Policy, to both the main contact form and step 3 of the Scope
+  Estimator wizard (both collect name/org/email/phone).
+- script.js: validateField() now correctly validates checkboxes
+  (previously a checkbox's required state was never actually
+  checked, since its .value is always non-empty regardless of
+  checked state). Wizard submit handler now blocks submission until
+  consent is checked. Consent flag is now included in the data sent
+  to the Google Sheet for the main contact form.
+- Linked Privacy Policy from the footer on both pages and added it
+  to sitemap.xml.
+---
+ index.html          |  16 ++-
+ privacy-policy.html | 238 ++++++++++++++++++++++++++++++++++++++++++++
+ script.js           |  32 ++++++
+ sitemap.xml         |   6 ++
+ styles.css          | 204 ++++++++++++++++++++++++++++++++++++-
+ 5 files changed, 494 insertions(+), 2 deletions(-)
+ create mode 100644 privacy-policy.html
+
+diff --git a/index.html b/index.html
+index 9925a94..94d8a30 100644
+--- a/index.html
++++ b/index.html
+@@ -831,6 +831,12 @@ Explore Our Divisions
+ <label for="wiz_notes">Specific Technical Requirements / Brief:</label>
+ <textarea id="wiz_notes" rows="3" placeholder="Provide any specific location details, venue count, or tender references..."></textarea>
+ </div>
++<div class="form-group form-consent">
++<label class="consent-check" id="wiz-consent-wrap">
++<input type="checkbox" id="wiz_consent" required>
++<span>I have read and agree to the <a href="privacy-policy.html" target="_blank" rel="noopener">Privacy Policy</a>, and I consent to Silverline Techno Solutions collecting and processing the information above to prepare this proposal, in accordance with the Digital Personal Data Protection Act, 2023.</span>
++</label>
++</div>
+ <div class="wizard-actions">
+ <button type="button" class="btn-secondary" id="wizPrev3">← Back</button>
+ <button type="submit" class="btn-primary btn-large" id="wizSubmitBtn">Submit Scope Brief</button>
+@@ -914,6 +920,13 @@ Explore Our Divisions
+ <textarea id="message" name="message" rows="4" required placeholder="Describe project scale, location, and technical requirements..." aria-describedby="message-error"></textarea>
+ <span class="form-error" id="message-error" role="alert" aria-live="polite"></span>
+ </div>
++<div class="form-group form-consent">
++<label class="consent-check" id="consent-wrap">
++<input type="checkbox" id="consent" name="consent" required aria-describedby="consent-error">
++<span>I have read and agree to the <a href="privacy-policy.html" target="_blank" rel="noopener">Privacy Policy</a>, and I consent to Silverline Techno Solutions collecting and processing the information above to respond to my enquiry, in accordance with the Digital Personal Data Protection Act, 2023.</span>
++</label>
++<span class="form-error" id="consent-error" role="alert" aria-live="polite"></span>
++</div>
+ <button type="submit" class="btn-primary btn-large btn-full" id="submitBtn">
+ <span class="btn-text">Submit Inquiry</span>
+ <span class="btn-loading" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 20 20"><circle cx="10" cy="10" r="8" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="40" stroke-dashoffset="10"><animateTransform attributeName="transform" type="rotate" values="0 10 10;360 10 10" dur="0.8s" repeatCount="indefinite"/></circle></svg></span>
+@@ -963,11 +976,12 @@ Explore Our Divisions
+ <li><span>Vijayawada, Andhra Pradesh – 520008</span></li>
+ <li><a href="tel:+919100091212">+91 91000 91212</a></li>
+ <li><a href="mailto:support@silverline.net.in">support@silverline.net.in</a></li>
++<li><a href="privacy-policy.html">Privacy Policy</a></li>
+ </ul>
+ </div>
+ </div>
+ <div class="footer-bottom">
+-<p>&copy; <span id="currentYear"></span> Silverline Techno Solutions. All rights reserved.</p>
++<p>&copy; <span id="currentYear"></span> Silverline Techno Solutions. All rights reserved. &nbsp;·&nbsp; <a href="privacy-policy.html">Privacy Policy</a></p>
+ </div>
+ </div>
+ </footer>
+diff --git a/privacy-policy.html b/privacy-policy.html
+new file mode 100644
+index 0000000..ef21dc3
+--- /dev/null
++++ b/privacy-policy.html
+@@ -0,0 +1,238 @@
++<!DOCTYPE html>
++<html lang="en">
++<head>
++<meta charset="UTF-8">
++<meta name="viewport" content="width=device-width, initial-scale=1.0">
++<meta http-equiv="X-UA-Compatible" content="IE=edge">
++<title>Privacy Policy | Silverline Techno Solutions</title>
++<meta name="description" content="Privacy Policy of Silverline Techno Solutions — how we collect, use, store and protect personal data, in accordance with India's Digital Personal Data Protection Act, 2023 and the Information Technology Act, 2000.">
++<meta name="robots" content="index, follow">
++<link rel="canonical" href="https://silverline.net.in/privacy-policy.html">
++<link rel="icon" type="image/x-icon" href="favicon.ico">
++<link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
++<link rel="icon" type="image/png" sizes="192x192" href="favicon-192.png">
++<link rel="apple-touch-icon" href="apple-touch-icon.png">
++<link rel="preconnect" href="https://fonts.googleapis.com">
++<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
++<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
++<link rel="stylesheet" href="styles.css">
++<style>
++.nav-logo .logo-full{height:48px;width:auto;max-width:none;transition:height .2s ease;}
++.footer-logo .logo-full{height:56px;width:auto;max-width:none;}
++@media (max-width:640px){.nav-logo .logo-full{height:38px;}.footer-logo .logo-full{height:46px;}}
++</style>
++</head>
++<body>
++<a href="#main-content" class="skip-link">Skip to main content</a>
++
++<header class="navbar" id="navbar" role="banner">
++<div class="nav-container">
++<a href="index.html" class="nav-logo" aria-label="Silverline Techno Solutions - Home">
++<img src="logo_nav.png" alt="Silverline Techno Solutions" class="logo-full" loading="eager">
++</a>
++<nav class="nav-links" id="navLinks" role="navigation" aria-label="Main navigation">
++<ul>
++<li><a href="index.html#home">Home</a></li>
++<li><a href="index.html#about">About Us</a></li>
++<li><a href="index.html#divisions">Divisions</a></li>
++<li><a href="index.html#team">Engineering Team</a></li>
++<li><a href="index.html#why-us">Why Us</a></li>
++<li><a href="index.html#clients">Clients</a></li>
++<li><a href="index.html#contact">Contact</a></li>
++</ul>
++</nav>
++<button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="navLinks">
++<span aria-hidden="true"></span>
++<span aria-hidden="true"></span>
++<span aria-hidden="true"></span>
++</button>
++</div>
++</header>
++
++<main id="main-content">
++
++<section class="policy-hero">
++<div class="container">
++<span class="section-tag">Legal</span>
++<h1>Privacy Policy</h1>
++<p>How Silverline Techno Solutions collects, uses, stores and protects your personal data.</p>
++</div>
++</section>
++
++<section class="policy-body">
++<div class="container">
++<div class="policy-content">
++
++<p class="policy-meta">Effective date: 21 August 2026 &nbsp;·&nbsp; Last updated: 21 August 2026</p>
++
++<div class="policy-note">
++This Privacy Policy is published in accordance with the Digital Personal Data Protection Act, 2023 (DPDP Act) and the Digital Personal Data Protection Rules, 2025, and the Information Technology Act, 2000 read with the Information Technology (Reasonable Security Practices and Procedures and Sensitive Personal Data or Information) Rules, 2011, as applicable to Silverline Techno Solutions as a Data Fiduciary under Indian law.
++</div>
++
++<div class="policy-toc">
++<h2>Contents</h2>
++<ol>
++<li><a href="#who-we-are">Who We Are</a></li>
++<li><a href="#data-we-collect">Personal Data We Collect</a></li>
++<li><a href="#how-we-use">How and Why We Use Your Data</a></li>
++<li><a href="#legal-basis">Consent and Legal Basis</a></li>
++<li><a href="#sharing">Sharing With Third Parties</a></li>
++<li><a href="#retention">Data Retention</a></li>
++<li><a href="#cookies">Cookies and Website Analytics</a></li>
++<li><a href="#security">How We Protect Your Data</a></li>
++<li><a href="#rights">Your Rights as a Data Principal</a></li>
++<li><a href="#children">Children's Data</a></li>
++<li><a href="#grievance">Grievance Redressal</a></li>
++<li><a href="#board">Complaints to the Data Protection Board of India</a></li>
++<li><a href="#changes">Changes to This Policy</a></li>
++<li><a href="#law">Governing Law and Jurisdiction</a></li>
++<li><a href="#contact-us">Contact Us</a></li>
++</ol>
++</div>
++
++<h2 id="who-we-are">1. Who We Are</h2>
++<p>This website <strong>silverline.net.in</strong> is owned and operated by <strong>Silverline Techno Solutions</strong> ("Silverline", "we", "us", "our"), an ISO 9001:2015 certified technology integration and engineering services firm with its headquarters at # 48-11/3-3/1, Road No. 6, Koneru Rama Krishnaiah Street, Currency Nagar, Vijayawada, Andhra Pradesh – 520008, India.</p>
++<p>For the purposes of the DPDP Act, Silverline Techno Solutions is the <strong>Data Fiduciary</strong> in respect of the personal data it collects through this website.</p>
++
++<h2 id="data-we-collect">2. Personal Data We Collect</h2>
++<p>We collect personal data only when you choose to share it with us — through our contact form or our Scope Estimator / Get a Quote wizard. This includes:</p>
++<ul>
++<li>Your full name and, where applicable, your designation</li>
++<li>Organization or department name</li>
++<li>Email address</li>
++<li>Phone number</li>
++<li>The division or service you are enquiring about</li>
++<li>Project details, technical requirements, scale and timeline information you provide</li>
++</ul>
++<p>We do not knowingly collect financial information, government identity numbers, biometric data, or other sensitive personal data through this website. Please do not include such information in your enquiry message.</p>
++<p>Our website does not use tracking cookies or analytics scripts at this time. If this changes — for example, if we add website analytics — this Policy will be updated in advance and, where required, your consent will be sought.</p>
++
++<h2 id="how-we-use">3. How and Why We Use Your Data</h2>
++<p>We use the personal data you provide solely to:</p>
++<ul>
++<li>Respond to your enquiry and communicate with you about it</li>
++<li>Prepare quotations, scope briefs, proposals or consultations you have requested</li>
++<li>Maintain records of business communications and, where a project proceeds, deliver contracted services</li>
++<li>Comply with applicable legal, accounting or regulatory obligations, including for government and public-sector tenders</li>
++</ul>
++<p>We do not use the information you submit for automated decision-making that produces legal or similarly significant effects concerning you.</p>
++
++<h2 id="legal-basis">4. Consent and Legal Basis</h2>
++<p>We process your personal data on the basis of the <strong>consent</strong> you provide when you tick the consent checkbox and submit our contact form or scope estimator. Consent is free, specific, informed and given through a clear affirmative action, in line with Section 6 of the DPDP Act.</p>
++<p>You may withdraw your consent at any time by writing to us at the contact details in Section 15 below. Withdrawal of consent will not affect the lawfulness of processing carried out before withdrawal, and may affect our ability to respond to a pending enquiry.</p>
++
++<h2 id="sharing">5. Sharing With Third Parties</h2>
++<p>We do not sell or rent your personal data. Submissions made through our contact form and scope estimator are transmitted to and stored via Google Apps Script and Google Sheets, which we use as a data processor to manage enquiries internally. Google processes this data on our behalf under its own security and data-processing terms.</p>
++<p>We may also share personal data where required by law, in response to a valid legal request from a government or regulatory authority, or with professional advisors (such as accountants or legal counsel) strictly on a need-to-know basis.</p>
++<p>We do not knowingly transfer personal data outside India except to the extent that our service providers (such as Google) process data on infrastructure located outside India, in which case such transfers are subject to that provider's own compliance safeguards.</p>
++
++<h2 id="retention">6. Data Retention</h2>
++<p>We retain enquiry data for as long as necessary to respond to your enquiry, pursue any resulting business relationship or tender process, and meet our accounting, tax or legal record-keeping obligations under Indian law — after which it is deleted or anonymized, unless you request earlier deletion under Section 9 below.</p>
++
++<h2 id="cookies">7. Cookies and Website Analytics</h2>
++<p>This website loads fonts from Google Fonts, which may cause your browser to make a request to Google's servers and share your IP address as part of that request. We do not currently set first-party tracking or advertising cookies, and we do not run analytics scripts. If that changes, we will update this section and, where legally required, present a cookie consent notice.</p>
++
++<h2 id="security">8. How We Protect Your Data</h2>
++<p>We follow reasonable security practices and procedures, as required under Section 43A of the Information Technology Act, 2000 and the DPDP Act, including restricting access to enquiry data to authorized personnel, using secure (HTTPS) transmission for this website, and relying on reputable third-party infrastructure (Google) for form storage. No method of transmission or storage is completely secure, and we cannot guarantee absolute security.</p>
++<p>In the event of a personal data breach that is likely to affect you, we will take reasonable steps to notify you and the Data Protection Board of India as required under the DPDP Rules, 2025.</p>
++
++<h2 id="rights">9. Your Rights as a Data Principal</h2>
++<p>Under the DPDP Act, 2023, you have the right to:</p>
++<ul>
++<li><strong>Access</strong> a summary of the personal data we hold about you and the processing activities we carry out</li>
++<li><strong>Correct or update</strong> inaccurate or incomplete personal data</li>
++<li><strong>Erase</strong> personal data that is no longer necessary for the purpose it was collected, unless we are required to retain it by law</li>
++<li><strong>Withdraw consent</strong> at any time (see Section 4)</li>
++<li><strong>Nominate</strong> another individual to exercise these rights on your behalf in the event of death or incapacity</li>
++<li><strong>Grievance redressal</strong>, as set out in Section 11 below</li>
++</ul>
++<p>To exercise any of these rights, write to us using the contact details in Section 15. We will respond within a reasonable time and in any event within the timelines prescribed under the DPDP Rules, 2025.</p>
++
++<h2 id="children">10. Children's Data</h2>
++<p>Our website and services are directed at businesses, government bodies and other organizations, and are not intended for use by individuals under the age of 18. We do not knowingly collect personal data from children. If you believe a child has provided us with personal data, please contact us and we will delete it.</p>
++
++<h2 id="grievance">11. Grievance Redressal</h2>
++<p>In accordance with the Information Technology Act, 2000 and the DPDP Act, 2023, we have designated a Grievance Officer to address any questions, concerns or complaints regarding this Policy or our handling of your personal data:</p>
++<p>
++<strong>Grievance Officer</strong><br>
++Silverline Techno Solutions<br>
++# 48-11/3-3/1, Road No. 6, Koneru Rama Krishnaiah Street, Currency Nagar, Vijayawada, Andhra Pradesh – 520008, India<br>
++Email: <a href="mailto:support@silverline.net.in">support@silverline.net.in</a><br>
++Phone: <a href="tel:+919100091212">+91 91000 91212</a>
++</p>
++<p>We will acknowledge and address grievances within the timelines prescribed under applicable Indian law.</p>
++
++<h2 id="board">12. Complaints to the Data Protection Board of India</h2>
++<p>If you are not satisfied with our response to your grievance, you have the right to file a complaint with the <strong>Data Protection Board of India</strong>, the regulatory authority constituted under the DPDP Act, 2023.</p>
++
++<h2 id="changes">13. Changes to This Policy</h2>
++<p>We may update this Privacy Policy from time to time to reflect changes in our practices or in applicable law, including as the DPDP Rules, 2025 come into full effect. Material changes will be reflected by an updated "Last updated" date at the top of this page.</p>
++
++<h2 id="law">14. Governing Law and Jurisdiction</h2>
++<p>This Privacy Policy is governed by the laws of India. Subject to applicable law, any disputes arising in connection with this Policy shall be subject to the exclusive jurisdiction of the courts at Vijayawada, Andhra Pradesh.</p>
++
++<h2 id="contact-us">15. Contact Us</h2>
++<p>For any questions about this Privacy Policy or our data practices, please contact us:</p>
++<p>
++Silverline Techno Solutions<br>
++# 48-11/3-3/1, Road No. 6, Koneru Rama Krishnaiah Street, Currency Nagar, Vijayawada, Andhra Pradesh – 520008, India<br>
++Email: <a href="mailto:support@silverline.net.in">support@silverline.net.in</a><br>
++Phone: <a href="tel:+919100091212">+91 91000 91212</a>
++</p>
++
++</div>
++</div>
++</section>
++
++</main>
++
++<footer class="footer" role="contentinfo">
++<div class="container">
++<div class="footer-grid">
++<div class="footer-brand">
++<a href="index.html" class="footer-logo" aria-label="Silverline Techno Solutions - Home">
++<img src="logo_nav.png" alt="Silverline Techno Solutions" class="logo-full" loading="lazy">
++</a>
++<p class="footer-tagline">Technology Integration & Engineering Services Partner across South India.</p>
++</div>
++<div class="footer-links">
++<h4>Quick Links</h4>
++<ul>
++<li><a href="index.html#about">Company Overview</a></li>
++<li><a href="index.html#divisions">Core Divisions</a></li>
++<li><a href="index.html#team">Engineering Team</a></li>
++<li><a href="index.html#why-us">Why Choose Us</a></li>
++<li><a href="index.html#clients">Major Clients</a></li>
++</ul>
++</div>
++<div class="footer-links">
++<h4>Core Divisions</h4>
++<ul>
++<li><a href="index.html#divisions">CCTV & Security</a></li>
++<li><a href="index.html#divisions">DGPS & GIS Surveying</a></li>
++<li><a href="index.html#divisions">Drone Photogrammetry</a></li>
++<li><a href="index.html#divisions">Fire & Safety Infrastructure</a></li>
++<li><a href="index.html#divisions">Video Wall Solutions</a></li>
++<li><a href="index.html#divisions">Walkie-Talkie & Wireless Comms</a></li>
++</ul>
++</div>
++<div class="footer-contact">
++<h4>Headquarters</h4>
++<ul>
++<li><span>Vijayawada, Andhra Pradesh – 520008</span></li>
++<li><a href="tel:+919100091212">+91 91000 91212</a></li>
++<li><a href="mailto:support@silverline.net.in">support@silverline.net.in</a></li>
++<li><a href="privacy-policy.html">Privacy Policy</a></li>
++</ul>
++</div>
++</div>
++<div class="footer-bottom">
++<p>&copy; <span id="currentYear"></span> Silverline Techno Solutions. All rights reserved. &nbsp;·&nbsp; <a href="privacy-policy.html">Privacy Policy</a></p>
++</div>
++</div>
++</footer>
++
++<div class="toast" id="toast" role="alert" aria-live="assertive" aria-atomic="true"></div>
++<script src="script.js"></script>
++</body>
++</html>
+diff --git a/script.js b/script.js
+index 64d8b22..0988406 100644
+--- a/script.js
++++ b/script.js
+@@ -375,12 +375,22 @@
+                 const org = document.getElementById('wiz_org').value.trim();
+                 const email = document.getElementById('wiz_email').value.trim();
+                 const phone = document.getElementById('wiz_phone').value.trim();
++                const wizConsent = document.getElementById('wiz_consent');
+ 
+                 if (!name || !org || !email || !phone) {
+                     showToast('Please fill in all required contact fields.', 'warning');
+                     return;
+                 }
+ 
++                if (!wizConsent || !wizConsent.checked) {
++                    showToast('Please agree to the Privacy Policy to continue.', 'warning');
++                    const wrap = document.getElementById('wiz-consent-wrap');
++                    if (wrap) wrap.classList.add('error');
++                    return;
++                }
++                const wrap = document.getElementById('wiz-consent-wrap');
++                if (wrap) wrap.classList.remove('error');
++
+                 submitBtn.disabled = true;
+                 submitBtn.textContent = 'Submitting Scope Brief...';
+ 
+@@ -480,6 +490,7 @@
+                 phone: document.getElementById('phone').value.trim(),
+                 service: document.getElementById('service').value,
+                 message: document.getElementById('message').value.trim(),
++                consent: document.getElementById('consent').checked ? 'Yes' : 'No',
+                 timestamp: new Date().toLocaleString()
+             };
+ 
+@@ -518,6 +529,27 @@
+             errorEl.classList.remove('visible');
+         }
+ 
++        if (field.type === 'checkbox') {
++            if (field.hasAttribute('required') && !field.checked) {
++                isValid = false;
++                message = 'Please agree to the Privacy Policy to continue';
++            }
++            if (!isValid) {
++                field.classList.add('error');
++                const wrap = field.closest('.consent-check');
++                if (wrap) wrap.classList.add('error');
++                if (errorEl) {
++                    errorEl.textContent = message;
++                    errorEl.classList.add('visible');
++                }
++            } else {
++                field.classList.remove('error');
++                const wrap = field.closest('.consent-check');
++                if (wrap) wrap.classList.remove('error');
++            }
++            return isValid;
++        }
++
+         if (field.hasAttribute('required') && !field.value.trim()) {
+             isValid = false;
+             message = 'This field is required';
+diff --git a/sitemap.xml b/sitemap.xml
+index 35bdc2a..0700dd6 100644
+--- a/sitemap.xml
++++ b/sitemap.xml
+@@ -6,4 +6,10 @@
+     <changefreq>monthly</changefreq>
+     <priority>1.0</priority>
+   </url>
++  <url>
++    <loc>https://silverline.net.in/privacy-policy.html</loc>
++    <lastmod>2026-08-21</lastmod>
++    <changefreq>yearly</changefreq>
++    <priority>0.3</priority>
++  </url>
+ </urlset>
+diff --git a/styles.css b/styles.css
+index 2c3bea2..d8aa3e2 100644
+--- a/styles.css
++++ b/styles.css
+@@ -1298,6 +1298,50 @@ button {
+     margin-bottom: 20px;
+ }
+ 
++.form-consent {
++    margin-bottom: 24px;
++}
++
++.consent-check {
++    display: flex;
++    align-items: flex-start;
++    gap: 10px;
++    cursor: pointer;
++    text-transform: none;
++    letter-spacing: normal;
++    font-weight: 400;
++}
++
++.consent-check input[type="checkbox"] {
++    flex: none;
++    width: 17px;
++    height: 17px;
++    margin-top: 3px;
++    accent-color: var(--accent-cyan);
++    cursor: pointer;
++}
++
++.consent-check span {
++    font-size: var(--text-xs);
++    color: var(--text-secondary);
++    line-height: 1.6;
++}
++
++.consent-check a {
++    color: var(--accent-cyan);
++    font-weight: 600;
++    text-decoration: underline;
++    text-underline-offset: 2px;
++}
++
++.consent-check a:hover {
++    color: var(--brand-400);
++}
++
++.consent-check.error span {
++    color: var(--accent-red);
++}
++
+ .form-row {
+     display: grid;
+     grid-template-columns: repeat(2, 1fr);
+@@ -1429,6 +1473,16 @@ input.error, select.error, textarea.error {
+     color: #64748b;
+ }
+ 
++.footer-bottom a {
++    color: var(--brand-500);
++    text-decoration: underline;
++    text-underline-offset: 2px;
++}
++
++.footer-bottom a:hover {
++    color: var(--accent-cyan);
++}
++
+ .toast {
+     position: fixed;
+     bottom: 30px;
+@@ -1528,4 +1582,152 @@ input.error, select.error, textarea.error {
+     .footer-logo .logo-full {
+         height: 46px;
+     }
+-}
+\ No newline at end of file
++}
++
++/* --------------------------------------------------------------------------
++   14. Legal / Policy Pages
++   -------------------------------------------------------------------------- */
++.policy-hero {
++    background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
++    padding: calc(var(--nav-height) + 64px) 0 56px;
++    border-bottom: 1px solid var(--border-light);
++}
++
++.policy-hero h1 {
++    font-size: clamp(1.8rem, 3.6vw, 2.5rem);
++    font-weight: 700;
++    margin-bottom: 12px;
++    color: var(--text-primary);
++}
++
++.policy-hero p {
++    color: var(--text-secondary);
++    font-size: var(--text-lg);
++}
++
++.policy-body {
++    background: var(--bg-primary);
++    padding: 64px 0 96px;
++}
++
++.policy-content {
++    max-width: 760px;
++    margin: 0 auto;
++}
++
++.policy-meta {
++    font-family: var(--font-mono);
++    font-size: var(--text-xs);
++    color: var(--text-muted);
++    margin-bottom: 24px;
++}
++
++.policy-note {
++    background: rgba(0, 229, 255, 0.06);
++    border: 1px solid var(--border-medium);
++    border-radius: var(--radius-lg);
++    padding: 18px 22px;
++    font-size: var(--text-sm);
++    color: var(--text-secondary);
++    line-height: 1.7;
++    margin-bottom: 24px;
++}
++
++.policy-toc {
++    background: var(--bg-card);
++    border: 1px solid var(--border-light);
++    border-radius: var(--radius-lg);
++    padding: 24px 28px;
++    margin-bottom: 40px;
++}
++
++.policy-toc h2 {
++    margin: 0 0 12px;
++    padding: 0;
++    border: none;
++    font-size: var(--text-lg);
++    color: var(--text-primary);
++}
++
++.policy-toc ol {
++    margin: 0;
++    padding-left: 20px;
++    color: var(--text-secondary);
++}
++
++.policy-toc li {
++    margin-bottom: 6px;
++}
++
++.policy-toc a {
++    color: var(--text-secondary);
++    text-decoration: none;
++}
++
++.policy-toc a:hover {
++    color: var(--accent-cyan);
++    text-decoration: underline;
++}
++
++.policy-content h2 {
++    font-size: 1.35rem;
++    font-weight: 700;
++    color: var(--text-primary);
++    margin: 42px 0 16px;
++    padding-top: 8px;
++    border-top: 1px solid var(--border-light);
++}
++
++.policy-content h2:first-of-type {
++    margin-top: 0;
++    padding-top: 0;
++    border-top: none;
++}
++
++.policy-content p {
++    color: var(--text-secondary);
++    font-size: var(--text-base);
++    line-height: 1.75;
++    margin-bottom: 16px;
++}
++
++.policy-content ul {
++    color: var(--text-secondary);
++    font-size: var(--text-base);
++    line-height: 1.75;
++    margin: 0 0 16px;
++    padding-left: 22px;
++    list-style: disc;
++}
++
++.policy-content li {
++    margin-bottom: 6px;
++}
++
++.policy-content li::marker {
++    color: var(--accent-cyan);
++}
++
++.policy-content a {
++    color: var(--accent-cyan);
++    font-weight: 600;
++    text-decoration: underline;
++    text-underline-offset: 2px;
++}
++
++.policy-content a:hover {
++    color: var(--brand-400);
++}
++
++.policy-content strong {
++    color: var(--text-primary);
++}
++
++@media (max-width: 640px) {
++    .policy-hero {
++        padding: calc(var(--nav-height) + 40px) 0 40px;
++    }
++    .policy-toc {
++        padding: 20px 22px;
++    }
++}
+-- 
+2.43.0
+

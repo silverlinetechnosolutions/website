@@ -1,0 +1,34 @@
+From 27ac448f4d928e6d9370bc529c80b05e243ec724 Mon Sep 17 00:00:00 2001
+From: Claude <noreply@anthropic.com>
+Date: Fri, 21 Aug 2026 12:57:58 +0000
+Subject: [PATCH] Shorten consent checkbox text on contact and wizard forms
+
+---
+ index.html | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/index.html b/index.html
+index 94d8a30..72e566a 100644
+--- a/index.html
++++ b/index.html
+@@ -834,7 +834,7 @@ Explore Our Divisions
+ <div class="form-group form-consent">
+ <label class="consent-check" id="wiz-consent-wrap">
+ <input type="checkbox" id="wiz_consent" required>
+-<span>I have read and agree to the <a href="privacy-policy.html" target="_blank" rel="noopener">Privacy Policy</a>, and I consent to Silverline Techno Solutions collecting and processing the information above to prepare this proposal, in accordance with the Digital Personal Data Protection Act, 2023.</span>
++<span>I agree to the <a href="privacy-policy.html" target="_blank" rel="noopener">Privacy Policy</a> and consent to my data being processed for this proposal.</span>
+ </label>
+ </div>
+ <div class="wizard-actions">
+@@ -923,7 +923,7 @@ Explore Our Divisions
+ <div class="form-group form-consent">
+ <label class="consent-check" id="consent-wrap">
+ <input type="checkbox" id="consent" name="consent" required aria-describedby="consent-error">
+-<span>I have read and agree to the <a href="privacy-policy.html" target="_blank" rel="noopener">Privacy Policy</a>, and I consent to Silverline Techno Solutions collecting and processing the information above to respond to my enquiry, in accordance with the Digital Personal Data Protection Act, 2023.</span>
++<span>I agree to the <a href="privacy-policy.html" target="_blank" rel="noopener">Privacy Policy</a> and consent to my data being processed for this enquiry.</span>
+ </label>
+ <span class="form-error" id="consent-error" role="alert" aria-live="polite"></span>
+ </div>
+-- 
+2.43.0
+
