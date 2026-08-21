@@ -381,6 +381,16 @@
                     return;
                 }
 
+                const wizConsent = document.getElementById('wiz_consent');
+                if (!wizConsent || !wizConsent.checked) {
+                    showToast('Please agree to the Privacy Policy to continue.', 'warning');
+                    const wrap = document.getElementById('wiz-consent-wrap');
+                    if (wrap) wrap.classList.add('error');
+                    return;
+                }
+                const wizWrap = document.getElementById('wiz-consent-wrap');
+                if (wizWrap) wizWrap.classList.remove('error');
+
                 submitBtn.disabled = true;
                 submitBtn.textContent = 'Submitting Scope Brief...';
 
@@ -480,6 +490,7 @@
                 phone: document.getElementById('phone').value.trim(),
                 service: document.getElementById('service').value,
                 message: document.getElementById('message').value.trim(),
+                consent: document.getElementById('consent').checked ? 'Yes' : 'No',
                 timestamp: new Date().toLocaleString()
             };
 
@@ -537,6 +548,27 @@
                 isValid = false;
                 message = 'Enter +91 followed by a 10-digit mobile number';
             }
+        }
+
+        if (field.type === 'checkbox') {
+            if (field.hasAttribute('required') && !field.checked) {
+                isValid = false;
+                message = 'Please agree to the Privacy Policy to continue';
+            }
+            if (!isValid) {
+                field.classList.add('error');
+                const wrap = field.closest('.consent-check');
+                if (wrap) wrap.classList.add('error');
+                if (errorEl) {
+                    errorEl.textContent = message;
+                    errorEl.classList.add('visible');
+                }
+            } else {
+                field.classList.remove('error');
+                const wrap = field.closest('.consent-check');
+                if (wrap) wrap.classList.remove('error');
+            }
+            return isValid;
         }
 
         if (!isValid) {
